@@ -1,11 +1,7 @@
 from flask import Flask,request,jsonify
-from flask_restful import Resource,Api,reqparse
-import joblib
-import json
-import sqlite3
+from flask_restful import Resource,Api
 from Raj_sqlite import *
 import pandas as pd
-import numpy as np
 
 app = Flask(__name__)
 api = Api(app)
