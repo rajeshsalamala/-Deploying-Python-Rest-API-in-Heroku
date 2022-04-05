@@ -35,10 +35,10 @@ class Match(Resource):
     def post(self):
         data = request.get_json()
         return db_search(data['Id'],data['Name'],'Demographic_details')
-
-        
     
 api.add_resource(Match,'/')
-app.run(debug=True)
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
