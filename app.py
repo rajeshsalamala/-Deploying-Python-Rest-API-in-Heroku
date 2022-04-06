@@ -1,24 +1,19 @@
 from flask import Flask,request,jsonify
 from flask_restful import Resource,Api
-from Raj_sqlite import *
 import pandas as pd
+import sqlite3
 
 app = Flask(__name__)
 api = Api(app)
 
-def get_db_data():
-    conn_db   = sqlite3.connect('Fr_details.db',detect_types=sqlite3.PARSE_DECLTYPES)
-    conn      = conn_db.cursor()
-    res = get_data(conn,'Demographic_details')   
-    df = pd.DataFrame(data = res,columns=['ID','Name','DOB','City','State','Pincode','Embeddings'])
-    df.drop(['Embeddings'],inplace=True,axis=1)
-    dic = df.T.to_dict('list')
-    return dic
 
-def db_search(id_,name_,tabel_name):
+
+@app.route('/', methods=['POST'])
+def db_search():
+    data = request.get_json()
     conn_db   = sqlite3.connect('Fr_details.db',detect_types=sqlite3.PARSE_DECLTYPES)
     conn      = conn_db.cursor()
-    q = f"""SELECT * FROM {tabel_name} WHERE ID == {id_} AND Name == '{name_}';"""
+    q = f"""SELECT * FROM Demographic_details WHERE ID == {data['Id']} AND Name == '{data['Name']}';"""
     conn.execute(q)
     match_details = conn.fetchall()
     if match_details != []:
@@ -29,12 +24,10 @@ def db_search(id_,name_,tabel_name):
     
 class Match(Resource):
     def get(self):
-        dic = get_db_data()
-        return jsonify(dic)
+        return "Hello"
           
     def post(self):
-        data = request.get_json()
-        return db_search(data['Id'],data['Name'],'Demographic_details')
+        return db_search()
     
 api.add_resource(Match,'/')
 
